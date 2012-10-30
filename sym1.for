@@ -1,14 +1,16 @@
       program test
       implicit none
       real a,b,c,pi,p,q,r,tma(3,3), tmb(3,3), tmc(3,3), tmr1(3,3),
-     +tmr2(3,3), v(3), dv(3), s(3), vr(3), tmm(3,3)
-      integer k,ka,kb,k1,k2,k3
+     +tmr2(3,3), v(3), dv(3), s(3), vr(3), tmm(3,3),x,y,z,x1,y1,vm(12,3)
+      integer k,ka,kb,k1,k2,k3,k4
      
-      write (*,*) 'Give vector (p,q,r):'
-
+      write (*,*) 'Give a vector (p,q,r):'
+      open(1, file='pf.out', status='unknown')
+      
       read (*,*) p,q,r
       
       s(:)=0.d0
+      vm(:,:)=0.d0
 
       dv(1)=p
       dv(2)=q
@@ -83,31 +85,60 @@
       do 700 k2=1,3
          v(k1)=v(k1)+tmr2(k1,k2)*dv(k2)
  700   continue
- 
- 
+
+      x=v(1)/sqrt(v(1)*v(1)+v(2)*v(2)+v(3)*v(3))
+      y=v(2)/sqrt(v(1)*v(1)+v(2)*v(2)+v(3)*v(3))
+      z=v(3)/sqrt(v(1)*v(1)+v(2)*v(2)+v(3)*v(3))
+      
+      if (z.GT.0) then
+        x1=x/(z+1)
+        y1=y/(z+1)
+      elseif (z.LT.0) then
+        x1=x/(1-z)
+        y1=y/(1-z)
+      else
+        x1=x
+        y1=y
+      end if
+       
+      write (*,'(3f7.3)') (v(k1),k1=1,3)
+      write (*,'(2f7.3)') (x1,y1)
+      write(1,'(2f7.3)') x1,y1
+      
       tmm(:,:)=0.d0
       tmm(1,1)=1.d0
       tmm(2,2)=-1.d0
       tmm(3,3)=1.d0
-      
-      
+           
       do 800 k1=1,3
       do 800 k2=1,3
          vr(k1)=vr(k1)+tmm(k1,k2)*v(k2)
- 800   continue     
+ 800   continue 
+ 
+      x=vr(1)/sqrt(vr(1)*vr(1)+vr(2)*vr(2)+vr(3)*vr(3))
+      y=vr(2)/sqrt(vr(1)*vr(1)+vr(2)*vr(2)+vr(3)*vr(3))
+      z=vr(3)/sqrt(vr(1)*vr(1)+vr(2)*vr(2)+vr(3)*vr(3))
       
+      if (z.GT.0) then
+        x1=x/(z+1)
+        y1=y/(z+1)
+      elseif (z.LT.0) then
+        x1=x/(1-z)
+        y1=y/(1-z)
+      else
+        x1=x
+        y1=y
+      end if
       
-      write (*,'(3f7.3)') (v(k1),k1=1,3)
       write (*,'(3f7.3)') (vr(k1),k1=1,3)
-     
+      write (*,'(2f7.3)') (x1,y1)
+      write(1,'(2f7.3)') x1,y1
 
 
  900  continue
-      
  
- 
+
+      close(1)
       read(*,*)
-      
-           
+          
       end program test
-      
